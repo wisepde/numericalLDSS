@@ -13,14 +13,13 @@ from collections import OrderedDict
 def Df(u,h):
 	return np.diff(np.append(u,u[0]))/h
 def df(u,h):
-	# return np.diff(np.append(u,u[0]))/h
 	return np.diff(np.append(u[-1],u))/h	
 
 class DLSSsolver1d():
 	def __init__(self, k, h, scope, uinitial, steps = 1000, savesteps = 10):
 		self.h = h
 		self.k = k
-		self.x = np.linspace(scope[0],scope[1],(scope[1]-scope[0])/h+1)
+		self.x = np.linspace(scope[0],scope[1],(scope[1]-scope[0])/h)
 		self.u0 = uinitial(self.x)
 		self.u = self.u0
 		self.uold = self.u0
@@ -36,9 +35,16 @@ class DLSSsolver1d():
 		umiddle = (np.roll(self.uold,-1)+self.uold)/2
 		f = df(umiddle*Df(H,self.h),self.h)
 		return f
+	def Nsch2(self):
+		H = -1/2*Df(self.u,self.h)**2/(self.u**2) - df(Df(self.u,self.h)/self.u,self.h)
+		umiddle = (np.roll(self.u,-1)+self.u)/2
+		f = df(umiddle*Df(H,self.h),self.h)
+		return f
 	def forward_diff(self):
+		self.u = self.uold + self.k*self.Nsch2()
 		self.uold = self.u
-		self.u = self.u + self.k*self.Nsch()
+
+
 	def explicit_implicit(self):
 		self.uold = self.u
 		g = lambda u:(u - self.uold) - self.k* self.Nsch()
@@ -63,7 +69,7 @@ class DLSSsolver1d():
 		print len(self.usol)
 		for i in range(len(self.usol)):
 			# plt.semilogy(self.x,np.transpose(self.usol),linestyle=lstyle)
-			plt.semilogy(self.x,self.usol[i],linestyle=lstyle[i])
+			plt.plot(self.x,self.usol[i],linestyle=lstyle[i])
 		axes = plt.gca()
 		if plotrange != None: 
 			axes.set_xlim(plotrange[0])
@@ -101,21 +107,30 @@ class DLSSsolver1d():
 
 def main():
 	# initial parameters
-	epsi = 1e-6
-	m = 20
-	u0_fun = lambda x: epsi**(-1/4)*(x[0]-0.5)**2/epsi**(1/2)*np.exp(-(x[0]-0.5)**2/4/epsi**(1/2))
+	epsi = 1e-4
+	# m = 20
+	u0_fun = lambda x:  epsi**(-1/4)*(x-0.5)**2/epsi**(1/2)*np.exp(-(x-0.5)**2/4/epsi**(1/2))+0.02
+	u_fun = lambda x, t: t**(-1/4)*(x-0.5)**2/t**(1/2)*np.exp(-(x-0.5)**2/4/t**(1/2))
 	# control of the run
 	scope = [0,1]
-	h = 1e-2
-	k = 1e-10
-	steps = int(8e-6/k)#int(7.2e-4/k)
-	plttime =np.array([8e-6])#, 3.2e-5, 1e-4, 7.2e-4])
+	x = np.linspace(scope[0],scope[1],100)
+	t = [1e-4,1e-3,1e-2]
+	y = [u_fun(x, tt) for tt in t]
+	for yy in y:
+		print np.min(yy)
+		plt.plot(x,yy)
+	plt.show()
+
+	h = 1e-1
+	k = 1e-4
+	steps = 2000#int(7.2e-4/k)
+	plttime =np.array([5e-10])#, 3.2e-5, 1e-4, 7.2e-4])
 	savesteps = plttime/k
 	savesteps = map(int,savesteps)
 	# build the model
 	a = DLSSsolver1d(k,h,scope,u0_fun,steps,savesteps)
 	# run
-	#a.run('explicit_implicit')
+	a.run('forward_diff')
 	# plot result
 	linestyles = OrderedDict(
     [('solid',               (0, ())),
@@ -128,7 +143,7 @@ def main():
 	# plt.plot(x,x,linestyle=lstyle[0])
 
 	# lstyle = ['solid', 'dashed', 'dotted', 'dashdotted', 'densely dashed']
-	#a.postposs('explicit_implicit.png',lstyle=lstyle)#,[[0,1],[0.0001,1.5]], [np.linspace(0,1,5),[0.0001,0.001,0.01,0.1,1]],lstyle)
+	a.postposs('explicit_implicit.png',lstyle=lstyle)#,[[0,1],[0.0001,1.5]], [np.linspace(0,1,5),[0.0001,0.001,0.01,0.1,1]],lstyle)
 	#a.post_energy()
 	# a.post_mass()
 	# a.post_min()

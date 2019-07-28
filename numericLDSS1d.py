@@ -115,6 +115,8 @@ def main():
 	# build the model
 	a = DLSSsolver1d(k,h,scope,u0_fun,steps,savesteps)
 	# run
+
+
 	a.run('explicit_implicit')
 	# plot result
 	linestyles = OrderedDict(
