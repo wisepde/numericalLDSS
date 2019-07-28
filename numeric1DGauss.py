@@ -103,7 +103,7 @@ def main():
 	# initial parameters
 	epsi = 1e-6
 	m = 20
-	u0_fun =  lambda x: (epsi**0.5 + ((1 + np.cos(2*np.pi*x))/2)**m)**2
+	u0_fun = lambda x: epsi**(-1/4)*(x[0]-0.5)**2/epsi**(1/2)*np.exp(-(x[0]-0.5)**2/4/epsi**(1/2))
 	# control of the run
 	scope = [0,1]
 	h = 1e-2
@@ -115,7 +115,7 @@ def main():
 	# build the model
 	a = DLSSsolver1d(k,h,scope,u0_fun,steps,savesteps)
 	# run
-	a.run('explicit_implicit')
+	#a.run('explicit_implicit')
 	# plot result
 	linestyles = OrderedDict(
     [('solid',               (0, ())),
@@ -128,12 +128,12 @@ def main():
 	# plt.plot(x,x,linestyle=lstyle[0])
 
 	# lstyle = ['solid', 'dashed', 'dotted', 'dashdotted', 'densely dashed']
-	a.postposs('explicit_implicit.png',lstyle=lstyle)#,[[0,1],[0.0001,1.5]], [np.linspace(0,1,5),[0.0001,0.001,0.01,0.1,1]],lstyle)
-	a.post_energy()
+	#a.postposs('explicit_implicit.png',lstyle=lstyle)#,[[0,1],[0.0001,1.5]], [np.linspace(0,1,5),[0.0001,0.001,0.01,0.1,1]],lstyle)
+	#a.post_energy()
 	# a.post_mass()
 	# a.post_min()
 	# explicit-implicit method
-	b = DLSSsolver1d(k,h,scope,u0_fun,steps,savesteps)
+	#b = DLSSsolver1d(k,h,scope,u0_fun,steps,savesteps)
 
 	# b.run('explicit_implicit')
 	# b.postposs('explicit_implicit.png')
