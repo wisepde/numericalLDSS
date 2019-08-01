@@ -2,9 +2,6 @@ from __future__ import division
 import numpy as np
 from scipy.optimize import root, fsolve, broyden1
 from functools import partial
-import matplotlib.style as mplstyle
-import matplotlib.pyplot as plt
-import matplotlib
 from collections import OrderedDict
 import pandas as pd
 # mplstyle.use(['ggplot'])
@@ -65,59 +62,19 @@ class DLSSsolver1d():
             pd.DataFrame(self.usol).to_csv(usolfile,index=False)
             pd.DataFrame(self.tt).to_csv(tfile,index=False)
             pd.DataFrame(self.x).to_csv(xfile,index=False)
-        def postposs(self, filename = 'a.png', plotrange = None, plotticks = None, lstyle = None):
-		print "------Plot Result------"
-		print "solved using %s" % self.method
-		print len(self.usol)
-		for i in range(len(self.usol)):
-			# plt.semilogy(self.x,np.transpose(self.usol),linestyle=lstyle)
-			plt.semilogy(self.x,self.usol[i],linestyle=lstyle[i])
-		axes = plt.gca()
-		if plotrange != None: 
-			axes.set_xlim(plotrange[0])
-			axes.set_ylim(plotrange[1])
-			axes.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
-		if plotticks != None:
-			plt.xticks(plotticks[0])
-			plt.yticks(plotticks[1])
-		# if lstyle != None:
-			# plt.set(linestyle=lstyle)
-		plt.savefig(filename,dpi=1000)
-		plt.show()
-
-		print "figure saved to %s" % filename		
-	def post_energy(self):
-		print "plot energy decay over time"
-		energy_fun = lambda u:self.h**2*np.sum(Df(u,1)**2/u)
-		uenergy = [energy_fun(i) for i in self.usol]
-		plt.plot(self.tt,uenergy,'k')
-		# plt.show()
-	def post_mass(self):
-		print "plot mass over time"
-		mass_fun = lambda u: np.sum(u)
-		umass = [mass_fun(i) for i in self.usol]
-		plt.plot(self.tt,umass,'k')
-		plt.show()
-	def post_min(self):
-		print "plot minimum value"
-		umass = [np.min(i) for i in self.usol]
-		plt.plot(self.tt,umass,'k')
-		plt.show()
-
-
 
 
 def main():
 	# initial parameters
 	epsi = 1e-3
-	m = 1
+	m = 2
 	u0_fun =  lambda x: (epsi**0.5 + ((1 + np.cos(2*np.pi*x))/2)**m)**2
 	# control of the run
 	scope = [0,1]
 	h = 1e-2
 	k = 1e-10
-	steps = int(7.2e-4/k)
-	plttime =np.array([8e-6, 3.2e-5, 1e-4, 7.2e-4])
+	steps = int(8e-10/k)#(7.2e-4/k)
+	plttime =np.array([8e-10])#6, 3.2e-5, 1e-4, 7.2e-4])
 	savesteps = plttime/k
 	savesteps = map(int,savesteps)
 	# build the model
@@ -126,7 +83,7 @@ def main():
 
 
 	a.run('explicit_implicit')
-	a.saveresult("e-3m1")
+	a.saveresult("e-3m2")
         # plot result
 #	linestyles = OrderedDict(
  #   [('solid',               (0, ())),
