@@ -6,7 +6,7 @@ import matplotlib.style as mplstyle
 import matplotlib.pyplot as plt
 import matplotlib
 from collections import OrderedDict
-
+import pandas as pd
 # mplstyle.use(['ggplot'])
 
 # defined for 1d use
@@ -57,7 +57,15 @@ class DLSSsolver1d():
 				self.usol.append(self.u)
 				self.tt.append(self.k*self.steps)
 		self.usol = np.array(self.usol)
-	def postposs(self, filename = 'a.png', plotrange = None, plotticks = None, lstyle = None):
+        def saveresult(self, filename = 'a'):
+            print "save results to %s" %filename
+            usolfile = filename + "_sol" + str(self.h) + '.csv'
+            tfile = filename + "_t" + str(self.h) + '.csv'
+            xfile = filename + "_x" + str(self.h) + '.csv'
+            pd.DataFrame(self.usol).to_csv(usolfile,index=False)
+            pd.DataFrame(self.tt).to_csv(tfile,index=False)
+            pd.DataFrame(self.x).to_csv(xfile,index=False)
+        def postposs(self, filename = 'a.png', plotrange = None, plotticks = None, lstyle = None):
 		print "------Plot Result------"
 		print "solved using %s" % self.method
 		print len(self.usol)
@@ -101,15 +109,15 @@ class DLSSsolver1d():
 
 def main():
 	# initial parameters
-	epsi = 1e-6
-	m = 20
+	epsi = 1e-3
+	m = 1
 	u0_fun =  lambda x: (epsi**0.5 + ((1 + np.cos(2*np.pi*x))/2)**m)**2
 	# control of the run
 	scope = [0,1]
 	h = 1e-2
 	k = 1e-10
-	steps = int(8e-6/k)#int(7.2e-4/k)
-	plttime =np.array([8e-6])#, 3.2e-5, 1e-4, 7.2e-4])
+	steps = int(7.2e-4/k)
+	plttime =np.array([8e-6, 3.2e-5, 1e-4, 7.2e-4])
 	savesteps = plttime/k
 	savesteps = map(int,savesteps)
 	# build the model
@@ -118,24 +126,25 @@ def main():
 
 
 	a.run('explicit_implicit')
-	# plot result
-	linestyles = OrderedDict(
-    [('solid',               (0, ())),
-     ('dashed',              (0, (5, 5))),
-     ('dotted',              (0, (1, 5))),
-     ('dashdotted',          (0, (3, 5, 1, 5))),
-     ('densely dashed',      (0, (5, 1)))])
-	lstyle= [ style for i,(name, style) in enumerate(linestyles.items())]
+	a.saveresult("e-3m1")
+        # plot result
+#	linestyles = OrderedDict(
+ #   [('solid',               (0, ())),
+  #   ('dashed',              (0, (5, 5))),
+   #  ('dotted',              (0, (1, 5))),
+    # ('dashdotted',          (0, (3, 5, 1, 5))),
+     #('densely dashed',      (0, (5, 1)))])
+#	lstyle= [ style for i,(name, style) in enumerate(linestyles.items())]
 	# x = np.linspace(0,1,10)
 	# plt.plot(x,x,linestyle=lstyle[0])
 
 	# lstyle = ['solid', 'dashed', 'dotted', 'dashdotted', 'densely dashed']
-	a.postposs('explicit_implicit.png',lstyle=lstyle)#,[[0,1],[0.0001,1.5]], [np.linspace(0,1,5),[0.0001,0.001,0.01,0.1,1]],lstyle)
-	a.post_energy()
+	#a.postposs('explicit_implicit.png',lstyle=lstyle)#,[[0,1],[0.0001,1.5]], [np.linspace(0,1,5),[0.0001,0.001,0.01,0.1,1]],lstyle)
+	#a.post_energy()
 	# a.post_mass()
 	# a.post_min()
 	# explicit-implicit method
-	b = DLSSsolver1d(k,h,scope,u0_fun,steps,savesteps)
+#	b = DLSSsolver1d(k,h,scope,u0_fun,steps,savesteps)
 
 	# b.run('explicit_implicit')
 	# b.postposs('explicit_implicit.png')
