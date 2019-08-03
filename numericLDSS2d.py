@@ -93,17 +93,17 @@ def main():
 	# u0_fun =  lambda x: (epsi**0.5 + ((1 + np.cos(2*np.pi*x[0]))/2)**m)**2
 	# control of the run
 	scope = np.array([[0,1],[0,1]])
-	h = 1e-1
-	k = 1e-10
-	steps = int(8e-6/k)#(7.2e-4/k)
-	plttime =np.array([8e-6])#6, 3.2e-5, 1e-4, 7.2e-4])
+	h = 1e-1/2
+	k = 1e-10/2
+	steps = int(2e-4/k)
+	plttime =np.array([8e-6, 3.2e-5, 1e-4, 2e-4])
 	savesteps = plttime/k
 	savesteps = map(int,savesteps)
 	# build the model
 	a = DLSSsolver2d(k,h,scope,u0_fun,steps,savesteps)
 	# run
-	# a.run('explicit_implicit')
-	a.run('forward_diff')
+	a.run('explicit_implicit')
+	#a.run('forward_diff')
 	a.saveresult("e2d-3m8")
 
 if __name__ == '__main__':
