@@ -46,8 +46,8 @@ class DLSSsolver2d():
 		self.u = self.u + self.k*self.Nsch()
 	def explicit_implicit(self):
 		self.uold = self.u
-		g = lambda u:(u - self.uold.flatten()) - self.k* self.Nsch().flatten()
-		sol=root(g,self.uold)
+		g = lambda u:(u - self.uold.flatten()) - self.k*(self.Nsch().flatten())
+		sol=root(g,self.uold.flatten(),method='df-sane')
 		self.u=sol.x.reshape(self.uold.shape)
 	def run(self,method):
 		self.method = method
@@ -95,8 +95,8 @@ def main():
 	scope = np.array([[0,1],[0,1]])
 	h = 1e-1/2
 	k = 1e-10/2
-	steps = int(2e-4/k)
-	plttime =np.array([8e-6, 3.2e-5, 1e-4, 2e-4])
+	steps = int(7.2e-4/k)
+	plttime =np.array([8e-6, 3.2e-5, 1e-4, 7.2e-4])
 	savesteps = plttime/k
 	savesteps = map(int,savesteps)
 	# build the model
