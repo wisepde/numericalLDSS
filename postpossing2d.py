@@ -5,7 +5,7 @@ from mpl_toolkits import mplot3d
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from collections import OrderedDict
-from numericLDSS1d import *
+from numericLDSS2d import *
 # filename = 'e-3m8'
 class postposs():
 	def __init__(self,t,h,filename, dpi = 300):
@@ -36,9 +36,9 @@ class postposs():
 		for i in range(u.shape[0]):
 			uu = u.iloc[i]
 			uu=uu.reshape([len(xx),len(xx)])
-			# mass.append(np.sum(yy))
+			mass.append(np.sum(uu.flatten()))
 			umin.append(np.min(uu))
-			# fisher.append(self.h**2*np.sum(Df(yy,1)**2/yy))
+			fisher.append(self.h**2*np.sum((Dx(uu,1)**2+Dy(uu,1))/uu))
 			# plt.semilogy(xx,yy,linestyle = lstyle[i])
 			fig = plt.figure()
 			ax = fig.gca(projection='3d')
@@ -52,30 +52,30 @@ class postposs():
 		# plt.xticks([0,0.25,0.5,0.75,1.0])	
 		# plt.savefig(filename + 'u.png',dpi=self.dpi)
 
-		# # plot mass
-		# plt.figure()
-		# plt.plot(mass-mass[0],'.-')
-		# t11 = [str(i) for i in self.t]
-		# plt.xticks(range(len(t11)), t11, size='small')
-		# plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-		# plt.ylim([-1e-10,1e-10])
-		# plt.savefig(filename + 'mass.png',dpi=self.dpi)
+		## plot mass
+		plt.figure()
+		plt.plot(mass-mass[0],'.-')
+		t11 = [str(i) for i in self.t]
+		plt.xticks(range(len(t11)), t11, size='small')
+		plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+		plt.ylim([-1e-10,1e-10])
+		plt.savefig(filename + 'mass.png',dpi=self.dpi)
 
 		# #plot energy
-		# plt.figure()
-		# plt.plot(fisher,'.-')
-		# t11 = [str(i) for i in self.t]
-		# plt.xticks(range(len(t11)), t11, size='small')
-		# plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-		# plt.savefig(filename + 'energy.png',dpi=self.dpi)
+		plt.figure()
+		plt.plot(fisher,'.-')
+		t11 = [str(i) for i in self.t]
+		plt.xticks(range(len(t11)), t11, size='small')
+		plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+		plt.savefig(filename + 'energy.png',dpi=self.dpi)
 
 		#plot min value
-		# plt.figure()
-		# plt.plot(umin,'.-')
-		# t11 = [str(i) for i in self.t]
-		# plt.xticks(range(len(t11)), t11, size='small')
+		plt.figure()
+		plt.plot(umin,'.-')
+		t11 = [str(i) for i in self.t]
+		plt.xticks(range(len(t11)), t11, size='small')
 		# # plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-		# plt.savefig(filename + 'min.png',dpi=self.dpi)
+		plt.savefig(filename + 'min.png',dpi=self.dpi)
 
 import argparse
 
