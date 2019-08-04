@@ -73,8 +73,8 @@ def main(argv):
 	scope = [0,1]
 	h = args.h#1e-2
 	k = args.k#1e-10
-	steps = int(8e-10/k)#(7.2e-4/k)
-	plttime =np.array([8e-10])#6, 3.2e-5, 1e-4, 7.2e-4])
+	steps = int(7.2e-4/k)
+	plttime =np.array([8e-6, 3.2e-5, 1e-4, 7.2e-4])
 	savesteps = plttime/k
 	savesteps = map(int,savesteps)
 	# build the model

@@ -2,12 +2,12 @@ mkdir result
 rm result/*.csv result/*.png
 for m in 1 2 8
 do
-    python numericLDSS1d.py --m  $m
+    nohup python numericLDSS1d.py --m  $m &
 done
 
 for m in 1 2 8
 do
-    python numericLDSS2d.py --m $m
+    nohup python numericLDSS2d.py --m $m &
 done
 
 #for m in 1 2 8
