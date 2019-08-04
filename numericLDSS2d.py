@@ -85,18 +85,18 @@ class DLSSsolver2d():
 		plt.show()
 
 		print "figure saved to %s" % filename
-def main():
+def main(args):
 	# initial parameters
-	epsi = 1e-3
-	m = 8
+	epsi = args.e#1e-3
+	m = args.m#8
 	u0_fun =  lambda x: (epsi**0.5 + ((1 + np.cos(2*np.pi*x[0])*np.cos(2*np.pi*x[1]))/2)**m)**2
 	# u0_fun =  lambda x: (epsi**0.5 + ((1 + np.cos(2*np.pi*x[0]))/2)**m)**2
 	# control of the run
 	scope = np.array([[0,1],[0,1]])
-	h = 1e-1/2
-	k = 1e-10/2
-	steps = int(7.2e-4/k)
-	plttime =np.array([8e-6, 3.2e-5, 1e-4, 7.2e-4])
+	h = args.h#1e-1/2
+	k = args.k#1e-10/2
+	steps = int(8e-10/k)#7.2e-4/k)
+	plttime =np.array([8e-10])#-6, 3.2e-5, 1e-4, 7.2e-4])
 	savesteps = plttime/k
 	savesteps = map(int,savesteps)
 	# build the model
@@ -104,7 +104,15 @@ def main():
 	# run
 	a.run('explicit_implicit')
 	#a.run('forward_diff')
-	a.saveresult("e2d-3m8")
+	a.saveresult("result/e2d%.0Em%d" %(epsi,m))
 
-if __name__ == '__main__':
-	main()
+import argparse
+
+if __name__ == "__main__":
+	parser = argparse.ArgumentParser()
+	parser.add_argument('--e',nargs='?',default=0.001,type=float,help = 'e')
+	parser.add_argument('--m',nargs='?',default=1,type=int,help='m')
+	parser.add_argument('--h',nargs='?',default=1e-1,type=float,help='h')
+	parser.add_argument('--k',nargs='?',default=1e-9,type=float,help='k')
+	args = parser.parse_args()
+	main(args)

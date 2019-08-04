@@ -14,9 +14,9 @@ class postposs():
 		self.dpi = dpi 
 	def plot(self):
 		filename = self.filename
-		u = pd.read_csv(filename + '_sol0.01.csv')
+		u = pd.read_csv(filename + '_sol' + str(self.h)+'.csv')
 		# t = pd.read_csv('a_t0.01.csv')
-		x = pd.read_csv(filename + '_x0.01.csv')
+		x = pd.read_csv(filename + '_x' + str(self.h) +'.csv')
 		xx = x['0']
 		# print u.shape[0]
 
@@ -56,7 +56,7 @@ class postposs():
 		plt.plot(fisher,'.-')
 		t11 = [str(i) for i in self.t]
 		plt.xticks(range(len(t11)), t11, size='small')
-		plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+		# plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
 		plt.savefig(filename + 'energy.png',dpi=self.dpi)
 
 		#plot min value
@@ -67,7 +67,16 @@ class postposs():
 		# plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
 		plt.savefig(filename + 'min.png',dpi=self.dpi)
 
+import argparse
+
 if __name__ == "__main__":
+	parser = argparse.ArgumentParser()
+	parser.add_argument('--e',nargs='?',default=0.001,type=float,help = 'e')
+	parser.add_argument('--m',nargs='?',default=1,type=int,help='m')
+	parser.add_argument('--h',nargs='?',default=1e-2,type=float,help='h')
+	parser.add_argument('--k',nargs='?',default=1e-10,type=float,help='k')
+	args = parser.parse_args()
+
 	t = [0.0,8e-6,3.2e-5, 1e-4, 7.2e-4]
-	a = postposs(t,0.01,'e-3m1')
+	a = postposs(t,args.h,"result/e%.0Em%d" %(args.e,args.m))
 	a.plot()

@@ -63,16 +63,16 @@ class DLSSsolver1d():
             pd.DataFrame(self.tt).to_csv(tfile,index=False)
             pd.DataFrame(self.x).to_csv(xfile,index=False)
 
-
-def main():
+def main(argv):
 	# initial parameters
-	epsi = 1e-3
-	m = 2
+	epsi = args.e #1e-3
+	m = args.m #2
+	print epsi, m
 	u0_fun =  lambda x: (epsi**0.5 + ((1 + np.cos(2*np.pi*x))/2)**m)**2
 	# control of the run
 	scope = [0,1]
-	h = 1e-2
-	k = 1e-10
+	h = args.h#1e-2
+	k = args.k#1e-10
 	steps = int(8e-10/k)#(7.2e-4/k)
 	plttime =np.array([8e-10])#6, 3.2e-5, 1e-4, 7.2e-4])
 	savesteps = plttime/k
@@ -83,7 +83,7 @@ def main():
 
 
 	a.run('explicit_implicit')
-	a.saveresult("e-3m2")
+	a.saveresult("result/e%.0Em%d" %(epsi,m))
         # plot result
 #	linestyles = OrderedDict(
  #   [('solid',               (0, ())),
@@ -105,9 +105,16 @@ def main():
 
 	# b.run('explicit_implicit')
 	# b.postposs('explicit_implicit.png')
+import argparse
 
 if __name__ == "__main__":
-	main()
+	parser = argparse.ArgumentParser()
+	parser.add_argument('--e',nargs='?',default=0.001,type=float,help = 'e')
+	parser.add_argument('--m',nargs='?',default=1,type=int,help='m')
+	parser.add_argument('--h',nargs='?',default=1e-2,type=float,help='h')
+	parser.add_argument('--k',nargs='?',default=1e-10,type=float,help='k')
+	args = parser.parse_args()
+	main(args)
 
 
 
