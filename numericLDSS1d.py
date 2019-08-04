@@ -39,7 +39,7 @@ class DLSSsolver1d():
 	def explicit_implicit(self):
 		self.uold = self.u
 		g = lambda u:(u - self.uold) - self.k* self.Nsch()
-		sol=root(g,self.uold)
+		sol=root(g,self.uold,method='df-sane')
 		self.u=sol.x
 	def run(self,method):
 		self.method = method
