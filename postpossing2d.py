@@ -6,6 +6,8 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from collections import OrderedDict
 from numericLDSS2d import *
+matplotlib.rcParams.update({'font.size': 20})
+
 # filename = 'e-3m8'
 class postposs():
 	def __init__(self,t,h,filename, dpi = 300):
@@ -42,10 +44,12 @@ class postposs():
 			# plt.semilogy(xx,yy,linestyle = lstyle[i])
 			fig = plt.figure()
 			ax = fig.gca(projection='3d')
-			surf = ax.plot_surface(xx,yy,uu, lw=0.5, rstride=1, cstride=1)
-			ax.set_zscale('log')
+			surf = ax.plot_surface(xx,yy,uu, lw=0.5, rstride=1, cstride=1,cmap='PuBu_r')
+			# ax.set_zscale('log')
+			ax.set_zlim([0.001,1])
+			fig.tight_layout()
 			# plt.contoursurf(xx,yy,uu)
-			plt.savefig(filename + "_" + str(i)+ 'u.png',dpi=self.dpi)
+			plt.savefig(filename + "_" + str(i)+ 'u.pdf',dpi=self.dpi)
 
 		# plt.xlim([0,1])	
 		# plt.ylim([0.0001,2])
@@ -59,7 +63,7 @@ class postposs():
 		plt.xticks(range(len(t11)), t11, size='small')
 		plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
 		plt.ylim([-1e-10,1e-10])
-		plt.savefig(filename + 'mass.png',dpi=self.dpi)
+		plt.savefig(filename + 'mass.pdf',dpi=self.dpi)
 
 		# #plot energy
 		plt.figure()
@@ -67,7 +71,7 @@ class postposs():
 		t11 = [str(i) for i in self.t]
 		plt.xticks(range(len(t11)), t11, size='small')
 		plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-		plt.savefig(filename + 'energy.png',dpi=self.dpi)
+		plt.savefig(filename + 'energy.pdf',dpi=self.dpi)
 
 		#plot min value
 		plt.figure()
@@ -75,7 +79,7 @@ class postposs():
 		t11 = [str(i) for i in self.t]
 		plt.xticks(range(len(t11)), t11, size='small')
 		# # plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-		plt.savefig(filename + 'min.png',dpi=self.dpi)
+		plt.savefig(filename + 'min.pdf',dpi=self.dpi)
 
 import argparse
 
